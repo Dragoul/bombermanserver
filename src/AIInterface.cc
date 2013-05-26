@@ -18,6 +18,7 @@ class AIInterface
   pid_t pid;
   string executablePath;
   string name;
+  string socketName;
 
   int connection_fd;
 
@@ -41,7 +42,7 @@ class AIInterface
       memset(&address, 0, sizeof(struct sockaddr_un));
 
       address.sun_family = AF_UNIX;
-      snprintf(address.sun_path, UNIX_PATH_MAX, "./demo_socket");
+      snprintf(address.sun_path, UNIX_PATH_MAX, socketName.c_str());
 
       usleep(100000);
       LOG_DEBUG("Trying to connect");
@@ -111,13 +112,13 @@ class AIInterface
       return 1;
     }
 
-    unlink("./demo_socket");
+    unlink(socketName.c_str());
 
     /* start with a clean address structure */
     memset(&address, 0, sizeof(struct sockaddr_un));
 
     address.sun_family = AF_UNIX;
-    snprintf(address.sun_path, UNIX_PATH_MAX, "./demo_socket");
+    snprintf(address.sun_path, UNIX_PATH_MAX, socketName.c_str());
 
     // bind socket to be able to receive connections
     if(bind(socket_fd, (struct sockaddr *) &address, sizeof(struct sockaddr_un)) != 0) {
@@ -145,7 +146,7 @@ class AIInterface
     LOG_DEBUG("Connection fd = %d", connection_fd);
 
     close(socket_fd);
-    unlink("./demo_socket");
+    unlink(socketName.c_str());
     return 0;
   }
 

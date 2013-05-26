@@ -11,3 +11,10 @@
 #define LOG_WARNING(msg, ...) LOG("\033[33mWARNING \033[0m", msg, ##__VA_ARGS__)
 #define LOG_DEBUG(msg, ...) LOG("\033[32mNOTE\033[0m", msg, ##__VA_ARGS__)
 
+
+#include <stdio.h>
+
+void gotoxy(int x, int y)
+{
+  printf("\033[%d;%df", x,y);
+}

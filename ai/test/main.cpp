@@ -27,6 +27,6 @@ int main() {
   while (game.read_round(std::cin)) {
     std::string action = engine.generate_action();
     std::cout << action << std::endl;
-    std::cerr << "Action sent: \"" << action << "\"" << std::endl;
+    std::cerr << "\"" << action << "\" action sent from " << player_id << std::endl;
   }
 }
