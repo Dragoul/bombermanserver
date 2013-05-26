@@ -36,13 +36,13 @@ LIB_DIR     = /usr/local/lib
 # gmake prefers CXX and CXXFLAGS for c++ programs
 ##############################################################################
 # Which compiler should be used
-CXX = colorgcc	
+CXX = colorgcc
 CC = $(CXX)
 
 # What flags should be passed to the compiler
 
 DEBUG_LEVEL     = -g
-EXTRA_CCFLAGS   = -Wall
+EXTRA_CCFLAGS   = -Wall -vvv
 CXXFLAGS        = $(DEBUG_LEVEL) $(EXTRA_CCFLAGS)
 CCFLAGS         = $(CXXFLAGS)
 
@@ -60,9 +60,8 @@ CPPFLAGS        = -I. \
 #   you should never need to include compiler specific directories here
 #   because each compiler already knows where to look for its system files.
 
-LDFLAGS         = -L.
-#                  -R $(LIB_DIR)
-#                  -R $(LIB_DIR):$(COURSE_DIR)
+LDFLAGS	=	-L. \
+		-R $(LIB_DIR)
 
 # What libraries should be linked with.
 # For example, -lm links with libm.so, the math library.
@@ -73,37 +72,60 @@ LDFLAGS         = -L.
 # All source files have associated object files.
 # This line sets `OFILES' to have the same value as `SRC_FILES' but
 # with all the .cc's changed into .o's.
-O_FILES         = $(BUILD_DIR)/$(SRC_FILES:%.cc=%.o)
 
-#O_FILES         = $(BUILD_DIR)/$(FILES:%.cc=%.o)
-
+O_FILES         = $(SRC_FILES:%.cc=$(BUILD_DIR)/%.o)
 
 ###########################################################################
 # Additional rules make should know about in order to compile our files
 ###########################################################################
 # all is the default rule
 all: $(EXEC)
-#	echo $(O_FILES)
-#	g++ main.cc 2>&1 | sed -e "s/\(error:\)\(.*\)$/`echo -e '\033[31m\1\033[34;1m\2\033[0m'`/g" -e "s/^\([^:]*:\)\([ 0-9]*\)/`echo -e '\033[37;1m \1 \033[35;0m \2 \033[0m'`/g"
+	@echo "Building all: $(SRC_FILES) -> $(O_FILES)"
+	mkdir -vp $(dir $(O_FILES))
 
+	$(CXX) -c -o $(O_FILES) $(SRC_FILES)
+	@find . -name *.o
+	$(CXX) $(O_FILES) -o $(EXEC)
 
 # exec depends on the object files
 # It is made automagically using the LDFLAGS and LOADLIBES variables.
 # The .o files are made automagically using the CXXFLAGS variable.
 $(EXEC): $(O_FILES)
 
+
+#$(objects): | obj
+#
+#obj:
+#  @mkdir -p $@
+#
+#obj/%.o : %.cpp
+#  @echo $< 
+#  @$(CXX) $(CXXFLAGS) -c $< -o $@
+
+#What does the "|" in the line $(objects): | obj stands for? 
+#
+#ezhaka, it means that the prerequisites that follow (in this case obj) are order-only prerequisites. This means that if any $(objects) must be built then obj must be built first, but if obj is out of date (or doesn't exist), that does not force $(objects) to be built.
+
+
+
 # to use `makedepend', the target is `depend'
 depend:
-	makedepend -- $(CXXFLAGS) -- -Y $(SRC_FILES) -p $(BUILD_DIR)/
+	makedepend -vm -- $(CXXFLAGS) -- -Y $(SRC_FILES) -p $(BUILD_DIR)/
 
 
 
 # clean up after you're done
 clean:
-	$(RM) $(O_FILES) core *.rpo
+	$(RM) -v $(O_FILES) core *.rpo
 
 very-clean: clean
-	$(RM) $(EXEC)
+	$(RM) -v $(EXEC)
+
+
+
 # DO NOT DELETE
 
-build/src/main.o: src/AIInterface.cc include/log.h
+build/src/main.o: src/AIInterface.cc
+# src/AIInterface.cc includes:
+#	../include/log.h
+build/src/main.o: include/log.h
