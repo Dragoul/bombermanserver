@@ -19,10 +19,9 @@ BUILD_DIR	= build
 SOURCE_DIR	= src
 INC_DIR		= include
 
-
 EXEC		= $(BUILD_DIR)/bombermanserver
-FILES		= main.cc src/player.cc
-SRC_FILES	= $(SOURCE_DIR)/$(FILES)
+FILES		= main.cc player.cc AIInterface.cc log.cc board.cc
+SRC_FILES	= $(FILES:%.cc=$(SOURCE_DIR)/%.cc)
 
 ##############################################################################
 # Where to find course related files
@@ -36,7 +35,7 @@ LIB_DIR     = /usr/local/lib
 # gmake prefers CXX and CXXFLAGS for c++ programs
 ##############################################################################
 # Which compiler should be used
-CXX = g++ #colorgcc
+CXX = colorgcc
 CC = $(CXX)
 
 # What flags should be passed to the compiler
@@ -80,17 +79,26 @@ O_FILES         = $(SRC_FILES:%.cc=$(BUILD_DIR)/%.o)
 ###########################################################################
 # all is the default rule
 all: $(EXEC)
-	@echo "Building all: $(SRC_FILES) -> $(O_FILES)"
-	mkdir -vp $(dir $(O_FILES))
+#	@echo "Building all: $(SRC_FILES) -> $(O_FILES)"
+#	mkdir -vp $(dir $(O_FILES))
 
-	$(CXX) -c -o $(O_FILES) $(SRC_FILES)
-	@find . -name *.o
-	$(CXX) $(O_FILES) -o $(EXEC)
+#	$(CXX) -c -o $(O_FILES) $(SRC_FILES)
+#	@find . -name *.o
+#	$(CXX) $(O_FILES) -o $(EXEC)
 
 # exec depends on the object files
 # It is made automagically using the LDFLAGS and LOADLIBES variables.
 # The .o files are made automagically using the CXXFLAGS variable.
 $(EXEC): $(O_FILES)
+	$(CXX) $(O_FILES) -o $(EXEC)
+
+
+# this is a suffix replacement rule for building .o's from .c's
+# it uses automatic variables $<: the name of the prerequisite of
+# the rule(a .c file) and $@: the name of the target of the rule (a .o file) 
+# (see the gnu make manual section about automatic variables)
+$(BUILD_DIR)/%.o: %.cc
+	$(CC) $(CFLAGS) $(INCLUDES) -c $<  -o $@
 
 
 #$(objects): | obj
@@ -125,12 +133,12 @@ very-clean: clean
 
 # DO NOT DELETE
 
-build/src/main.o: src/AIInterface.cc
-# src/AIInterface.cc includes:
+build/src/main.o: src/AIInterface.h
+# src/AIInterface.h includes:
 #	../include/log.h
 #	player.h
 build/src/main.o: include/log.h src/player.h
 # src/player.h includes:
 #	board.h
 build/src/main.o: src/board.h
-build/src/player.o: include/log.h
+build/src/player.o: src/player.h src/board.h include/log.h

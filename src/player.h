@@ -8,7 +8,7 @@ using namespace std;
 #include <string>
 
 #include "board.h"
-/*
+
 typedef enum{
   PASS = 0,
   DOWN,
@@ -16,7 +16,7 @@ typedef enum{
   RIGHT,
   LEFT
 } PlayerMotionType;
-*/
+
 class Player
 {
  public:
@@ -35,10 +35,10 @@ class Player
   
   ~Player();
 
-int move(Board board, PlayerMotionType dir);
+  int move(Board board, PlayerMotionType dir);
 
 };
 
-//ostream& operator << (ostream &os, const Player p);
+ostream& operator << (ostream &os, const Player p);
 
 #endif

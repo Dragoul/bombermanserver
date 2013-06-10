@@ -5,9 +5,11 @@
 #include <sstream>
 #include <vector>
 
-#include "AIInterface.cc"
+#include "AIInterface.h"
 #include "player.h"
 #include "board.h"
+
+#include "../include/log.h"
 
 using namespace std;
 
@@ -66,7 +68,7 @@ int main(int argc, char * argv[])
     "#...+...#\n",
     "####.####\n",
     "#########\n"};
-
+  
   /*  string players[5] = {
     "4\n",
     "0 1 3\n",
@@ -107,22 +109,11 @@ int main(int argc, char * argv[])
     
     gotoxy(0,0);
     cout << mapo;
-    /*
-    for (a = 0; a < height; a++) {
-      cout << map[a];
+    
+    cout << players.size() << "\n";
+    for (a = 0; a < players.size(); a++) {
+      cout << "Player " << a << ": " << players[a] << endl;
     }
-    */
-    /*    cout << players.size() << endl;
-    for(vector<Player>::const_iterator itr = players.begin();
-	itr < players.end();
-	++itr)
-    {
-      cout << "Player " << a << ": " << *itr << endl;
-      }*/
-     cout << players.size() << "\n";
-      for (a = 0; a < players.size(); a++) {
-	cout << "Player " << a << ": " << players[a] << endl;
-      }
 
 
     for (a = 0; a < 1; a++) {
@@ -145,11 +136,7 @@ int main(int argc, char * argv[])
 	break;
 
       ais[player_id] << mapo;
-      /*
-      for (a = 0; a < height; a++) {
-	ais[player_id] << map[a];
-      }
-      */
+
       ais[player_id] << players.size() << "\n";
       for (a = 0; a < players.size(); a++) {
 	ais[player_id] << a << " " << players[a];

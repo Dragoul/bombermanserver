@@ -1,13 +1,10 @@
-/*
-#include <iostream>
+
+#ifndef __AIINTERFACE_H__
+#define __AIINTERFACE_H__
+
+
 #include <string>
-#include <sstream>
 
-#include <sys/socket.h>
-#include <sys/un.h>
-#include <sys/wait.h>
-
-#include "../include/log.h"
 #include "player.h"
 
 using namespace std;
@@ -41,4 +38,5 @@ class AIInterface
 
   PlayerMotionType getMovement();
 };
-*/
+
+#endif

@@ -1,7 +1,7 @@
 
 
 
-#inlcude "player.h"
+#include "player.h"
 
 #include "../include/log.h"
 
@@ -15,22 +15,22 @@ Player::~Player()
 
 int Player::move(Board board, PlayerMotionType dir)
 {
-
+  
   switch(dir){
   case DOWN:
-    if(board.free(x,y-1))
+    if(board.empty(x,y-1))
       y--;
     break;
   case UP:
-    if(board.free(x,y+1))
+    if(board.empty(x,y+1))
       y++;
     break;
   case RIGHT:
-    if(board.free(x+1,y))
+    if(board.empty(x+1,y))
       x++;
     break;
   case LEFT:
-    if(board.free(x-1,y))
+    if(board.empty(x-1,y))
       x--;
     break;
   case PASS:
@@ -39,11 +39,12 @@ int Player::move(Board board, PlayerMotionType dir)
     LOG_ERROR("Movement Failed!");
     break;
   }
+  
 }
-/*
+
 ostream& operator << (ostream &os, const Player p)
 {
   os << p.x << " " << p.y;
-
+  
   return os;
-  }*/
+}
