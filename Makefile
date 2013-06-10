@@ -21,7 +21,7 @@ INC_DIR		= include
 
 
 EXEC		= $(BUILD_DIR)/bombermanserver
-FILES		= main.cc
+FILES		= main.cc src/player.cc
 SRC_FILES	= $(SOURCE_DIR)/$(FILES)
 
 ##############################################################################
@@ -36,7 +36,7 @@ LIB_DIR     = /usr/local/lib
 # gmake prefers CXX and CXXFLAGS for c++ programs
 ##############################################################################
 # Which compiler should be used
-CXX = colorgcc
+CXX = g++ #colorgcc
 CC = $(CXX)
 
 # What flags should be passed to the compiler
@@ -128,4 +128,9 @@ very-clean: clean
 build/src/main.o: src/AIInterface.cc
 # src/AIInterface.cc includes:
 #	../include/log.h
-build/src/main.o: include/log.h
+#	player.h
+build/src/main.o: include/log.h src/player.h
+# src/player.h includes:
+#	board.h
+build/src/main.o: src/board.h
+build/src/player.o: include/log.h

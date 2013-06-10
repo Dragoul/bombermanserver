@@ -12,9 +12,17 @@
 #define LOG_DEBUG(msg, ...) LOG("\033[32mNOTE\033[0m", msg, ##__VA_ARGS__)
 
 
-#include <stdio.h>
+#include <iostream>
 
 void gotoxy(int x, int y)
 {
-  printf("\033[%d;%df", x,y);
+  //  printf("\033[%d;%df",y,x);
+  //  std::cout << std::flush;
+
+  std::cout << "\033[" << y << ";" << x << "H" << std::flush;
+}
+
+void cls()
+{
+  std::cout << "\033[2J" << std::flush;
 }

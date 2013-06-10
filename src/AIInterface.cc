@@ -8,8 +8,13 @@
 #include <sys/wait.h>
 
 #include "../include/log.h"
+#include "player.h"
 
 using namespace std;
+
+
+
+
 
 class AIInterface
 {
@@ -19,10 +24,13 @@ class AIInterface
   string executablePath;
   string name;
   string socketName;
+  string action;
 
   int connection_fd;
 
-  AIInterface(string execPath) : executablePath(execPath) {}
+  AIInterface(string execPath) : executablePath(execPath) {
+    action = "pass";
+  }
   ~AIInterface() {}
 
   int StartClientAi()
@@ -87,14 +95,15 @@ class AIInterface
   {
     char rdb[1000];
 
-    int n = read(connection_fd, rdb, sizeof(rdb));
+    operator>>(rdb);
+      //    int n = read(connection_fd, rdb, sizeof(rdb));
     if(strcmp(rdb, "PING")){
       LOG_ERROR("PING Failed, got %s", rdb);
       return 1;
     }
 
     strcpy(rdb,"PONG\n");
-    write(connection_fd, rdb, strlen(rdb));
+    operator<<(rdb);
     return 0;
   }
 
@@ -202,7 +211,7 @@ class AIInterface
     int n = read(connection_fd, rdb, sizeof(rdb));
 
     if (n >= 1000) {
-      LOG_ERROR("INDEX OUT OF BONUNDS=");
+      LOG_ERROR("INDEX OUT OF BOuNNDS=");
     }
     rdb[n]='\0';
     stringstream s;
@@ -211,7 +220,34 @@ class AIInterface
     return *this;
   }
 
+  PlayerMotionType getMovement()
+  {
+    //    operator>>(action);
+
+    if (action == "pass") {
+      return PASS;
+    }
+    else if (action == "left"){
+      return LEFT;
+    }
+    else if (action == "right"){
+      return RIGHT;
+    }
+    else if (action == "down") {
+      return DOWN;
+    }
+    else if (action == "up") {
+      return UP;
+    }
+    else {
+      LOG_ERROR("Invalid motion: %s", action);
+      action = "pass";
+      return PASS;
+    }
+  }
+
 };
+
 
 ostream& operator << (ostream &out, const AIInterface& ai)
 {
@@ -226,6 +262,3 @@ istream& operator >> (istream &in, AIInterface& ai)
 {
   return in;
 }
-
-
-
